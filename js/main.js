@@ -62,6 +62,26 @@ function startFloppy() {
 
 function initialiseGame() {
 
+$("#replay").click(function() {
+   //make sure we can only click once
+   if(!replayclickable)
+      return;
+   else
+      replayclickable = false;
+   //SWOOSH!
+   soundSwoosh.stop();
+   soundSwoosh.play();
+   
+   //fade out the scoreboard
+   $("#scoreboard").transition({ y: '-40px', opacity: 0}, 1000, 'ease', function() {
+      //when that's done, display us back to nothing
+      $("#scoreboard").css("display", "none");
+      
+      //start the game over!
+      showSplash();
+   });
+});
+
 //Handle space bar
 $(document).keydown(function(e){
    //space bar!
@@ -438,26 +458,6 @@ function showScore()
    //make the replay button clickable
    replayclickable = true;
 }
-
-$("#replay").click(function() {
-   //make sure we can only click once
-   if(!replayclickable)
-      return;
-   else
-      replayclickable = false;
-   //SWOOSH!
-   soundSwoosh.stop();
-   soundSwoosh.play();
-   
-   //fade out the scoreboard
-   $("#scoreboard").transition({ y: '-40px', opacity: 0}, 1000, 'ease', function() {
-      //when that's done, display us back to nothing
-      $("#scoreboard").css("display", "none");
-      
-      //start the game over!
-      showSplash();
-   });
-});
 
 function playerScore()
 {
