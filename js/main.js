@@ -54,6 +54,9 @@ buzz.all().setVolume(volume);
 var loopGameloop;
 var loopPipeloop;
 
+// stop us getting shocked each time bird dies
+var wasPlaying;
+
 $(document).ready(function() {
    if(window.location.search == "?debug")
       debugmode = true;
@@ -119,6 +122,12 @@ function showSplash()
 }
 
 function startGame()
+{
+  wasPlaying = true;
+  Puck.write('digitalPulse(LED1,1,10);\n', _startGame);
+}
+
+function _startGame()
 {
    currentstate = states.GameScreen;
    
@@ -347,6 +356,11 @@ function setMedal()
 
 function playerDead()
 {
+   if (wasPlaying) {
+     Puck.write('digitalPulse(D1,1,2);\n', _startGame);
+     wasPlaying = false;
+   }
+
    //stop animating everything!
    $(".animated").css('animation-play-state', 'paused');
    $(".animated").css('-webkit-animation-play-state', 'paused');
