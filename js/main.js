@@ -54,10 +54,33 @@ buzz.all().setVolume(volume);
 var loopGameloop;
 var loopPipeloop;
 
-// stop us getting shocked each time bird dies
-var wasPlaying;
+function startFloppy() {
+  document.getElementById("startcontainer").style="display:none";
+  document.getElementById("gamecontainer").style="";
+  Puck.write('digitalPulse(LED1,1,10);\n', initialiseGame);
+}
 
-$(document).ready(function() {
+function initialiseGame() {
+
+//Handle space bar
+$(document).keydown(function(e){
+   //space bar!
+   if(e.keyCode == 32)
+   {
+      //in ScoreScreen, hitting space should click the "replay" button. else it's just a regular spacebar hit
+      if(currentstate == states.ScoreScreen)
+         $("#replay").click();
+      else
+         screenClick();
+   }
+});
+
+//Handle mouse down OR touch start
+if("ontouchstart" in window)
+   $(document).on("touchstart", screenClick);
+else
+   $(document).on("mousedown", screenClick);
+
    if(window.location.search == "?debug")
       debugmode = true;
    if(window.location.search == "?easy")
@@ -70,7 +93,7 @@ $(document).ready(function() {
    
    //start with the splash screen
    showSplash();
-});
+}
 
 function getCookie(cname)
 {
@@ -122,12 +145,6 @@ function showSplash()
 }
 
 function startGame()
-{
-  wasPlaying = true;
-  Puck.write('digitalPulse(LED1,1,10);\n', _startGame);
-}
-
-function _startGame()
 {
    currentstate = states.GameScreen;
    
@@ -258,25 +275,6 @@ function gameloop() {
    }
 }
 
-//Handle space bar
-$(document).keydown(function(e){
-   //space bar!
-   if(e.keyCode == 32)
-   {
-      //in ScoreScreen, hitting space should click the "replay" button. else it's just a regular spacebar hit
-      if(currentstate == states.ScoreScreen)
-         $("#replay").click();
-      else
-         screenClick();
-   }
-});
-
-//Handle mouse down OR touch start
-if("ontouchstart" in window)
-   $(document).on("touchstart", screenClick);
-else
-   $(document).on("mousedown", screenClick);
-
 function screenClick()
 {
    if(currentstate == states.GameScreen)
@@ -356,10 +354,7 @@ function setMedal()
 
 function playerDead()
 {
-   if (wasPlaying) {
-     Puck.write('digitalPulse(D1,1,2);\n', _startGame);
-     wasPlaying = false;
-   }
+   Puck.write('digitalPulse(D1,1,1);\n');
 
    //stop animating everything!
    $(".animated").css('animation-play-state', 'paused');
