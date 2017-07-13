@@ -105,6 +105,8 @@ else
       debugmode = true;
    if(window.location.search == "?easy")
       pipeheight = 200;
+   if(window.location.search == "?medium")
+      pipeheight = 120;
    
    //get the highscore
    var savedscore = getCookie("highscore");
